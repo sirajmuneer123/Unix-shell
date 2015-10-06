@@ -1,3 +1,4 @@
+/*simple unix shell programming....*/
 #include"header.h"
 int readL(char *wptr[],char *script[],char *p,char rchar[]);
 void exe(char *wptr[],char *script[],int nwords,char dir[],char rchar[]);
@@ -23,8 +24,8 @@ main()
 		strcat(dir,wptr[0]);
 	
 		exe(wptr,script,nwords,dir,rchar);/* ececute the commands*/
-		}	
-}
+	}	
+}/* execute function */
 void exe(char *wptr[],char *script[],int nwords,char dir[],char rchar[])
 {
 	int pid,re,in,out;
@@ -48,7 +49,7 @@ void exe(char *wptr[],char *script[],int nwords,char dir[],char rchar[])
 			wait(&pid);
 			break;
 	}
-}
+}/* piping function */
 void piping(char *wptr[])
 {	
 	int i,j,k;
@@ -82,7 +83,7 @@ void piping(char *wptr[])
 			pipe(pfd2); 
 	pid = fork();
 	switch (pid) {
-		case -1:
+		case -1: /* fork error checking..*/
 			if (i != c_index - 1) {
 				if (i % 2 != 0)
 					close(pfd1[1]);
@@ -91,7 +92,7 @@ void piping(char *wptr[])
 			}
 			fprintf(stderr, "fork failed!\n");
 			break;
-		case 0:
+		case 0:     /* piping...*/ 
 			if (i == 0)
 				dup2(pfd2[1], 1);
 			else if (i == c_index - 1) {
@@ -110,7 +111,8 @@ void piping(char *wptr[])
 			}
 			int ex;
 			ex=execvp(multy[i][0], multy[i]);
-			if(ex == -1) { /* errror checking and exec the commands */				fprintf(stderr, "exec function failed!\n");
+			if(ex == -1) { /* errror checking and exec the commands */	
+			fprintf(stderr, "exec function failed!\n");
 				exit(0);
 			}
 			break;	
@@ -137,32 +139,34 @@ void piping(char *wptr[])
 	}
 	wait(&pid);
      }
-}
+}/*  redirection function definition*/
 void redirect(char *wptr[],char dir[],char rchar[],int nwords)
 {
-			int fd,in,i,j=0,fd2;
-			char *temp[20];
-				for(i=0;strcmp(wptr[i],"<")!=0 && strcmp(wptr[i],">")!=0 && strcmp(wptr[i],">>")!=0;i++)
-					temp[j++]=wptr[i];
-				temp[j]=NULL;
-			if(rchar[0]=='>'){  /* cheking for '>' redirection */
-                                fd=open(wptr[nwords-1],O_RDWR|O_CREAT|O_TRUNC,0666);
-                                close(STDOUT_FILENO);
-                                dup(fd);
-				execvp(dir,temp);
-                        }else if(rchar[0]=='<'){ /*checking for '<' redirection */
-                                in=open(wptr[nwords-1],O_RDONLY,0666);
-                                close(STDIN_FILENO);
-                                dup(in);
-                                execvp(dir,temp);
-			}else if(rchar[0]=='@'){ /* checking for '>>' redirection ('@' representing '>>')*/
-				fd2=open(wptr[nwords-1],O_APPEND|O_WRONLY,0666);
-				close(STDOUT_FILENO);
-				dup(fd2);
-				execvp(dir,temp);
-			}
+	int fd,in,i,j=0,fd2;
+	char *temp[20];
 
+	for(i=0;strcmp(wptr[i],"<")!=0 && strcmp(wptr[i],">")!=0 && strcmp(wptr[i],">>")!=0;i++)
+		temp[j++]=wptr[i];
+	temp[j]=NULL;
 
+	if(rchar[0]=='>'){  /* cheking for '>' redirection */
+        	fd=open(wptr[nwords-1],O_RDWR|O_CREAT|O_TRUNC,0666);
+                close(STDOUT_FILENO);
+                dup(fd);
+		execvp(dir,temp);
+
+        }else if(rchar[0]=='<'){ /*checking for '<' redirection */
+             	in=open(wptr[nwords-1],O_RDONLY,0666);
+               	close(STDIN_FILENO);
+                dup(in);
+                execvp(dir,temp);
+
+	}else if(rchar[0]=='@'){ /* checking for '>>' redirection ('@' representing '>>')*/
+		fd2=open(wptr[nwords-1],O_APPEND|O_WRONLY,0666);
+		close(STDOUT_FILENO);
+		dup(fd2);
+		execvp(dir,temp);
+	}
 }
 /* read the input commands */
 int readL(char *arg[],char *script[],char *p,char rchar[])

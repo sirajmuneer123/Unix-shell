@@ -15,7 +15,7 @@ main()
 	while(1){
 		printf("[siraj@shell]$ ");
 		fgets(line,sizeof(line),stdin); /* read the input file*/
-		if(line[0]=='\n')/* if input is newline */
+		if(line[0]=='\n')   /* if input is newline */
 			continue;
 	        p=strtok(line,"\n");
 

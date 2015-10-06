@@ -1,8 +1,8 @@
-
 #include"header.h"
 int readL(char *wptr[],char *script[],char *p,char rchar[]);
 void exe(char *wptr[],char *script[],int nwords,char dir[],char rchar[]);
 void redirect(char *wptr[],char dir[],char rchar[],int nwords);
+void create2D(char *wptr[]);
 void piping(char *wptr[]);
 main()
 {
@@ -13,15 +13,17 @@ main()
 	char dir[50];
 	char *p;
 	while(1){
-		printf("$ ");
+		printf("[siraj@shell]$ ");
 		fgets(line,sizeof(line),stdin); /* read the input file*/
+		if(line[0]=='\n')/* if input is newline */
+			continue;
 	        p=strtok(line,"\n");
 
 		nwords=readL(wptr,script,p,rchar);
 		strcpy(dir,"/bin/");
 		strcat(dir,wptr[0]);
 	
-		exe(wptr,script,nwords,dir,rchar);/* execute the commands*/
+		exe(wptr,script,nwords,dir,rchar);/* ececute the commands*/
 		}	
 }
 void exe(char *wptr[],char *script[],int nwords,char dir[],char rchar[])
@@ -109,8 +111,7 @@ void piping(char *wptr[])
 			}
 			int ex;
 			ex=execvp(multy[i][0], multy[i]);
-			if(ex == -1) { /* errror checking and exec the commands */				
-				fprintf(stderr, "exec function failed!\n");
+			if(ex == -1) { /* errror checking and exec the commands */				fprintf(stderr, "exec function failed!\n");
 				exit(0);
 			}
 			break;	
@@ -137,6 +138,10 @@ void piping(char *wptr[])
 	}
 	wait(&pid);
      }
+}
+void create2D(char *wptr[])
+{
+	
 }
 void redirect(char *wptr[],char dir[],char rchar[],int nwords)
 {
@@ -191,3 +196,4 @@ int readL(char *arg[],char *script[],char *p,char rchar[])
 	rchar[1]='\0';
 	return i;
 }
+

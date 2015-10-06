@@ -2,7 +2,6 @@
 int readL(char *wptr[],char *script[],char *p,char rchar[]);
 void exe(char *wptr[],char *script[],int nwords,char dir[],char rchar[]);
 void redirect(char *wptr[],char dir[],char rchar[],int nwords);
-void create2D(char *wptr[]);
 void piping(char *wptr[]);
 main()
 {
@@ -138,10 +137,6 @@ void piping(char *wptr[])
 	}
 	wait(&pid);
      }
-}
-void create2D(char *wptr[])
-{
-	
 }
 void redirect(char *wptr[],char dir[],char rchar[],int nwords)
 {

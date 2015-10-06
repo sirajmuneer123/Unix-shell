@@ -2,7 +2,7 @@
 #include"header.h"
 int readL(char *wptr[],char *script[],char *p,char rchar[]);
 void exe(char *wptr[],char *script[],int nwords,char dir[],char rchar[]);
-void redirect(char *wptr[],char dir[],char rchar[],int nwords);
+void redirect(char *wptr[],char *script[],char dir[],char rchar[],int nwords);
 void piping(char *wptr[]);
 main()
 {
@@ -36,7 +36,7 @@ void exe(char *wptr[],char *script[],int nwords,char dir[],char rchar[])
 			break;
 		case 0:
 			if(rchar[0]=='>'|rchar[0]=='<'|rchar[0]=='@'){ /* checking for redirection */
-				redirect(wptr,dir,rchar,nwords);
+				redirect(wptr,script,dir,rchar,nwords);
 				break;
 			}else if(rchar[0]=='|'){ /* checking for piping */
 				piping(wptr);
@@ -140,7 +140,7 @@ void piping(char *wptr[])
 	wait(&pid);
      }
 }/*  redirection function definition*/
-void redirect(char *wptr[],char dir[],char rchar[],int nwords)
+void redirect(char *wptr[],char *script[],char dir[],char rchar[],int nwords)
 {
 	int fd,in,i,j=0,fd2;
 	char *temp[20];
@@ -156,10 +156,7 @@ void redirect(char *wptr[],char dir[],char rchar[],int nwords)
 		execvp(dir,temp);
 
         }else if(rchar[0]=='<'){ /*checking for '<' redirection */
-             	in=open(wptr[nwords-1],O_RDONLY,0666);
-               	close(STDIN_FILENO);
-                dup(in);
-                execvp(dir,temp);
+		 execvp(dir,script);
 
 	}else if(rchar[0]=='@'){ /* checking for '>>' redirection ('@' representing '>>')*/
 		fd2=open(wptr[nwords-1],O_APPEND|O_WRONLY,0666);

@@ -21,7 +21,7 @@ main()
 		strcpy(dir,"/bin/");
 		strcat(dir,wptr[0]);
 	
-		exe(wptr,script,nwords,dir,rchar);/* ececute the commands*/
+		exe(wptr,script,nwords,dir,rchar);/* execute the commands*/
 		}	
 }
 void exe(char *wptr[],char *script[],int nwords,char dir[],char rchar[])
@@ -109,7 +109,8 @@ void piping(char *wptr[])
 			}
 			int ex;
 			ex=execvp(multy[i][0], multy[i]);
-			if(ex == -1) { /* errror checking and exec the commands */				fprintf(stderr, "exec function failed!\n");
+			if(ex == -1) { /* errror checking and exec the commands */				
+				fprintf(stderr, "exec function failed!\n");
 				exit(0);
 			}
 			break;	

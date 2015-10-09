@@ -4,6 +4,7 @@ int readL(char *wptr[],char *script[],char *p,char rchar[]);
 void exe(char *wptr[],char *script[],int nwords,char dir[],char rchar[]);
 void redirect(char *wptr[],char *script[],char dir[],char rchar[],int nwords);
 void piping(char *wptr[]);
+void create2Darray(char *multy[][20],char *wptr[],int *c_index,int *a_index);
 main()
 {
 	char rchar[3],line[100];
@@ -52,29 +53,14 @@ void exe(char *wptr[],char *script[],int nwords,char dir[],char rchar[])
 }/* piping function */
 void piping(char *wptr[])
 {	
-	int i,j,k;
-	char *multy[15][15];/* 2D array for pipe command */
-	int m,n;
+	int i,j;
+	char *multy[20][20];/* 2D array for pipe command */
 	int pfd1[2],pfd2[2]; 
 	int pid;
-	for(m=0;m<15;m++) 		/* null the araay*/
-		for(n=0;n<15;n++)
-			multy[m][n]=0;
-	int c_index=0;		/* number of commands*/
-	int a_index=0;		/*  number of arguments */
-
-	for(j=0;wptr[j]!=NULL;j++){		/* creating 2D arry for pipe*/
-		if (strcmp(wptr[j], "|") == 0) {
-			multy[c_index][a_index] = 0;
-			a_index = 0;
-			c_index++;
-		}else {
-			multy[c_index][a_index] = wptr[j];
-			a_index++;
-		}
-	}
-	multy[c_index][a_index] = 0;
-	c_index++;
+	int c_index=0;  /*  number of commands...*/
+	int a_index=0;  /* number of arguments...*/
+	
+	create2Darray(multy,wptr,&c_index,&a_index); /* create a 2dimensional array... */
 	
 	for (i=0; i<c_index; i++) {
 		if (i % 2 != 0)   /* calling different file dicreptor for odd or even*/
@@ -120,8 +106,8 @@ void piping(char *wptr[])
 		default:
 			break;
 		}
-	
-	if (i == 0)  /*close all pfd  */
+	/* close all pfd....*/
+	if (i == 0) 
 		close(pfd2[1]);
 	else if (i == c_index - 1) {
 		if (c_index % 2 != 0)
@@ -139,7 +125,32 @@ void piping(char *wptr[])
 	}
 	wait(&pid);
      }
-}/*  redirection function definition*/
+}
+void create2Darray(char *multy[][20],char *wptr[],int *c_index,int *a_index)
+{
+	int i,j;
+       // char *multy[15][15];/* 2D array for pipe command */
+        int m,n;
+        int pfd1[2],pfd2[2];
+        int pid;
+        for(m=0;m<15;m++)               /* null the araay*/
+                for(n=0;n<15;n++)
+                        multy[m][n]=0;
+
+        for(j=0;wptr[j]!=NULL;j++){             /* creating 2D arry for pipe*/
+                if (strcmp(wptr[j], "|") == 0) {
+                        multy[*c_index][*a_index] = 0;
+                       *a_index = 0;
+                        (*c_index)++;
+                }else {
+                        multy[*c_index][*a_index] = wptr[j];
+                        (*a_index)++;
+                }
+        }
+        multy[*c_index][*a_index] = 0;
+        (*c_index)++;
+}
+/*  redirection function definition*/
 void redirect(char *wptr[],char *script[],char dir[],char rchar[],int nwords)
 {
 	int fd,in,i,j=0,fd2;
